@@ -65,7 +65,11 @@ public class ScannerActivity extends FragmentActivity implements SampleFragment.
     }
 
     @Override
-    public void onItemScan(String nomeAluno) {
+    public void onItemScan(String nomeAluno, String telefone, String curso, String periodo, String nomeItem) {
         txtNomeAluno.setText(nomeAluno);
+        txtCurso.setText(curso);
+        txtNomeItem.setText(nomeItem);
+        txtPeriodo.setText(periodo);
+        txtTelefone.setText(telefone);
     }
 }
