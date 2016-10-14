@@ -17,41 +17,46 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="0dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="180dp"
         />
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:paddingTop="10dp"
+        android:background="#FFF"
+        android:gravity="center"
+        android:id="@+id/linearLayout">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Entrada"
+            android:id="@+id/btnEntrada"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Saida"
+            android:id="@+id/btnSaida"
+            android:layout_marginLeft="50dp"
+            />
+
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="257dp"
+        android:layout_height="190dp"
         android:id="@+id/layout_content"
-        android:background="#FFF"
-        android:layout_marginRight="5dp"
-        android:layout_marginLeft="5dp">
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Entrada"
-                android:id="@+id/btnEntrada"
-                />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Saida"
-                android:id="@+id/btnSaida"
-                android:layout_marginLeft="50dp"
-                />
-
-        </LinearLayout>
+        android:background="@drawable/stroke_background"
+        android:layout_below="@+id/linearLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -106,6 +111,7 @@
             android:textAlignment="center"
             android:padding="10dp"
             android:id="@+id/txtNomeItem"
+            android:gravity="center"
             android:text="Caixa com próteses"/>
 
         <LinearLayout
@@ -126,18 +132,12 @@
                 android:id="@+id/txtDataEntrada"
                 android:text="20/09/2016 (09:56:35)"/>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Saída: "/>
+                android:text="Saída: "
+                android:layout_marginLeft="20dp"/>
 
 
             <TextView android:layout_width="wrap_content"
@@ -148,6 +148,18 @@
 
         </LinearLayout>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:layout_below="@id/layout_content"
+        android:background="#FFF"
+        android:gravity="center"
+        android:id="@+id/linearLayout2">
     </LinearLayout>
 
     <Button

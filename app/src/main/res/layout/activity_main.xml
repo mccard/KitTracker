@@ -33,4 +33,5 @@
         android:id="@+id/btnScannerFragment"
         android:layout_below="@id/btnShowLog"
         android:layout_centerHorizontal="true"/>
+
 </RelativeLayout>
