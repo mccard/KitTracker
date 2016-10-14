@@ -4,19 +4,29 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.welcu.android.zxingfragmentlib.BarCodeScannerFragment;
 
 import edu.uco.mcamposcardoso.kittracker.R;
+import edu.uco.mcamposcardoso.kittracker.fragments.SampleFragment;
 
-public class ScannerActivity extends FragmentActivity {
+public class ScannerActivity extends FragmentActivity implements SampleFragment.ScannerListener {
 
     LinearLayout layoutContent;
     BarCodeScannerFragment mScannerFragment;
+    TextView txtNomeAluno, txtTelefone, txtCurso, txtPeriodo, txtNomeItem;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scanner);
+        setContentView(R.layout.activity_scanner); //tentar fazer algo com 2 fragmentos em vez de 1 fragmento + coisas
+        //na tela
+
+        txtNomeAluno = (TextView) this.findViewById(R.id.txtNomeAluno);
+        txtTelefone = (TextView) this.findViewById(R.id.txtTelefone);
+        txtCurso = (TextView) this.findViewById(R.id.txtCurso);
+        txtPeriodo = (TextView) this.findViewById(R.id.txtPeriodo);
+        txtNomeItem = (TextView) this.findViewById(R.id.txtNomeItem);
 
         FragmentManager fm = getSupportFragmentManager();
         mScannerFragment = (BarCodeScannerFragment) fm.findFragmentById(R.id.scanner_fragment);
@@ -52,5 +62,10 @@ public class ScannerActivity extends FragmentActivity {
 //    mToggleButton = (Button) findViewById(R.id.button_flash);
 //    mToggleButton.setOnClickListener(createToggleFlashListener());
 
+    }
+
+    @Override
+    public void onItemScan(String nomeAluno) {
+        txtNomeAluno.setText(nomeAluno);
     }
 }
