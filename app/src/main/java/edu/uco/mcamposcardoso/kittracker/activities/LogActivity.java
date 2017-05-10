@@ -48,7 +48,7 @@ public class LogActivity extends AppCompatActivity {
                 listLog.add(StringToLog(records[i]));
             }
 
-            lstLog.setAdapter(new RowAdapter(getBaseContext(), listLog));
+            lstLog.setAdapter(new RowAdapter (getBaseContext(), listLog));
 
         }catch (Exception e){
             Toast.makeText(this, "Não há registros!", Toast.LENGTH_LONG).show();

@@ -18,7 +18,7 @@ public class SampleFragment extends BarCodeScannerFragment {
     private ScannerListener mListener = null;
     private static final long DELAY = 2000; // 2 seconds
     Aluno aluno1, aluno2;
-    int k;
+    int k, uy;
     ArrayList<Aluno> alunos = new ArrayList();
     ArrayList<Item> items = new ArrayList();
     Item item1, item2;
@@ -47,15 +47,15 @@ public class SampleFragment extends BarCodeScannerFragment {
         beepManager.updatePrefs();
 
         k = 0;
+        uy = 0;
 
         this.setmCallBack(new IResultCallback() {
             private long lastTimestamp = 0;
             @Override
             public void result(Result lastResult) {
-                if((System.currentTimeMillis() - lastTimestamp) < DELAY) { // 2s delay
-                Log.d("Delay applied", String.valueOf(System.currentTimeMillis())
+                if((System.currentTimeMillis() - lastTimestamp) < DELAY) { // 2s delay (Se a diferença do scaneamento atual pro ´ultimo escaneamento for menor do que 2 segundos => aplica deplay (return)
+                    Log.d("Delay applied", String.valueOf(System.currentTimeMillis())
                         + ", " + String.valueOf(lastTimestamp) + ", " + DELAY);
-
                     return;
                 }
 

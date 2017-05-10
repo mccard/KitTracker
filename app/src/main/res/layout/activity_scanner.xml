@@ -30,17 +30,20 @@
         android:gravity="center"
         android:id="@+id/linearLayout">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Entrada"
+        <ToggleButton
             android:id="@+id/btnEntrada"
-            />
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:text="Entrada"
+            android:textOff="Entrada"
+            android:textOn="Entrada" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ToggleButton
+            android:layout_width="120dp"
+            android:layout_height="60dp"
             android:text="Saida"
+            android:textOff="Saida"
+            android:textOn="Saida"
             android:id="@+id/btnSaida"
             android:layout_marginLeft="50dp"
             />

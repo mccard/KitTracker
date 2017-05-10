@@ -24,10 +24,6 @@
             android:name=".activities.ScannerActivity"
             android:label="@string/title_activity_scanner" >
         </activity>
-        <activity
-            android:name=".fragments.ScannerFragment"
-            android:label="@string/title_activity_scanner_fragment" >
-        </activity>
     </application>
 
 </manifest>
