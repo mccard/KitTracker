@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -15,7 +14,6 @@ import edu.uco.mcamposcardoso.kittracker.fragments.SampleFragment;
 
 public class ScannerActivity extends FragmentActivity implements SampleFragment.ScannerListener {
 
-    LinearLayout layoutContent;
     BarCodeScannerFragment mScannerFragment;
     TextView txtNomeAluno, txtTelefone, txtCurso, txtPeriodo, txtNomeItem;
     ToggleButton btnEntrada, btnSaida;
