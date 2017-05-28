@@ -1,5 +1,6 @@
 package edu.uco.mcamposcardoso.kittracker.fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -7,6 +8,18 @@ import android.widget.Toast;
 import com.google.zxing.Result;
 import com.google.zxing.client.android.BeepManager;
 import com.welcu.android.zxingfragmentlib.BarCodeScannerFragment;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+
+import edu.uco.mcamposcardoso.kittracker.types.UserToken;
+
 
 public class SampleFragment extends BarCodeScannerFragment {
 
@@ -39,6 +52,8 @@ public class SampleFragment extends BarCodeScannerFragment {
 
                 beepManager.playBeepSoundAndVibrate();
 
+                new HttpRequestTask().execute();
+
                 // Space reserved to call mListener.OnItemScan() in order to trigger the activity associated with this fragment
 
                 Toast.makeText(getActivity(), scan_count++ + " Scan: " + lastResult.toString(), Toast.LENGTH_SHORT).show();
@@ -63,5 +78,45 @@ public class SampleFragment extends BarCodeScannerFragment {
     @Override
     public int getRequestedCameraId() {
         return -1; // set to 1 to use the front camera (won't work if the device doesn't have one, it is up to you to handle this method ;)
+    }
+
+    private class HttpRequestTask extends AsyncTask<Void, Void, UserToken> {
+        @Override
+        protected UserToken doInBackground(Void... params) {
+            try {
+                final String url = "https://odontokits.herokuapp.com/authenticate_user";
+                RestTemplate restTemplate = new RestTemplate();
+
+                HttpHeaders headers = new HttpHeaders();
+
+                headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+                MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
+
+                body.add("email", "its.matheus3@gmail.com");
+                body.add("password", "123123");
+
+                HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
+
+                restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+
+                // Alternative to the implementation below
+                //  ResponseEntity<UserToken> response = restTemplate.exchange(url, HttpMethod.POST, request, UserToken.class);
+                // return response.getBody();
+                return restTemplate.postForObject(url, request, UserToken.class);
+
+            } catch (Exception e) {
+                Log.e("MainActivity", e.getMessage(), e);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(UserToken userToken) {
+            Toast.makeText(getActivity(), userToken.getAuth_token(), Toast.LENGTH_SHORT).show();
+        }
+
     }
 }
