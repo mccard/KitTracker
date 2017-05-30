@@ -23,32 +23,33 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="5dp"
+        android:layout_height="190dp"
         android:paddingTop="10dp"
         android:background="#FFF"
         android:gravity="center"
         android:id="@+id/linearLayout">
 
-        <ToggleButton
-            android:id="@+id/btnEntrada"
-            android:layout_width="120dp"
-            android:layout_height="60dp"
-            android:text="Entrada"
-            android:textOff="Entrada"
-            android:textOn="Entrada" />
 
-        <ToggleButton
-            android:layout_width="120dp"
-            android:layout_height="60dp"
-            android:text="Saida"
-            android:textOff="Saida"
-            android:textOn="Saida"
+        <Button
+            android:id="@+id/btnEntrada"
+            android:layout_width="160dp"
+            android:layout_height="80dp"
+            android:text="Entrada"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
+
+        <Button
             android:id="@+id/btnSaida"
+            android:layout_width="160dp"
+            android:layout_height="80dp"
             android:layout_marginLeft="50dp"
-            />
+            android:text="Saída"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
+
 
     </LinearLayout>
+    <!--
 
     <LinearLayout
         android:orientation="vertical"
@@ -164,14 +165,6 @@
         android:gravity="center"
         android:id="@+id/linearLayout2">
     </LinearLayout>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Toggle flash"
-        android:id="@+id/button_flash"
-        android:layout_marginBottom="30dp"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"/>
+-->
 
 </RelativeLayout>
