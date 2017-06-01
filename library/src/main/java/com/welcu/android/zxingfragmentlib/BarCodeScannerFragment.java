@@ -87,7 +87,6 @@ public class BarCodeScannerFragment extends Fragment implements SurfaceHolder.Ca
   private AmbientLightManager ambientLightManager;
   private IResultCallback mCallBack;
   private ProgressDialog progressDialog;
-  private boolean destroyed = false;
 
   public interface IResultCallback {
     void result(Result lastResult);
@@ -249,8 +248,6 @@ public class BarCodeScannerFragment extends Fragment implements SurfaceHolder.Ca
   public void onDestroy() {
     inactivityTimer.shutdown();
     super.onDestroy();
-    dismissProgressDialog();
-    this.destroyed = true;
   }
 
   public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -419,23 +416,4 @@ public class BarCodeScannerFragment extends Fragment implements SurfaceHolder.Ca
     viewfinderView.drawViewfinder();
   }
 
-  public void showLoadingProgressDialog() {
-    this.showProgressDialog("Loading. Please wait...");
-  }
-
-  public void showProgressDialog(CharSequence message) {
-    if (this.progressDialog == null) {
-      this.progressDialog = new ProgressDialog(getActivity());
-      this.progressDialog.setIndeterminate(true);
-    }
-
-    this.progressDialog.setMessage(message);
-    this.progressDialog.show();
-  }
-
-  public void dismissProgressDialog() {
-    if (this.progressDialog != null && !this.destroyed) {
-      this.progressDialog.dismiss();
-    }
-  }
 }
