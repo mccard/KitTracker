@@ -9,14 +9,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.welcu.android.zxingfragmentlib.BarCodeScannerFragment;
-
 import edu.uco.mcamposcardoso.kittracker.R;
 import edu.uco.mcamposcardoso.kittracker.fragments.SampleFragment;
 
 public class ScannerActivity extends FragmentActivity implements SampleFragment.ScannerListener {
 
-    BarCodeScannerFragment mScannerFragment;
+    SampleFragment mScannerFragment;
     TextView txtNomeAluno, txtTelefone, txtCurso, txtPeriodo, txtNomeItem;
     Button btnEntrada, btnSaida;
 
@@ -29,9 +27,11 @@ public class ScannerActivity extends FragmentActivity implements SampleFragment.
         txtCurso = (TextView) this.findViewById(R.id.txtCurso);
         txtPeriodo = (TextView) this.findViewById(R.id.txtPeriodo);
      //   txtNomeItem = (TextView) this.findViewById(R.id.txtNomeItem);
-
         btnEntrada = (Button) this.findViewById(R.id.btnEntrada);
         btnSaida = (Button) this.findViewById(R.id.btnSaida);
+
+        FragmentManager manager = getSupportFragmentManager();
+        mScannerFragment = (SampleFragment) manager.findFragmentById(R.id.scanner_fragment);
 
         btnEntrada.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,6 +40,7 @@ public class ScannerActivity extends FragmentActivity implements SampleFragment.
                 btnSaida.setTextColor(ColorStateList.valueOf(Color.BLACK));
                 btnEntrada.setTextColor(ColorStateList.valueOf(Color.WHITE));
                 btnEntrada.setBackgroundDrawable(getResources().getDrawable(R.drawable.toggle_state_on));
+                mScannerFragment.setFeed_type("Entrada");
             }
         });
 
@@ -50,11 +51,9 @@ public class ScannerActivity extends FragmentActivity implements SampleFragment.
                 btnEntrada.setTextColor(ColorStateList.valueOf(Color.BLACK));
                 btnSaida.setTextColor(ColorStateList.valueOf(Color.WHITE));
                 btnSaida.setBackgroundDrawable(getResources().getDrawable(R.drawable.toggle_state_off));
+                mScannerFragment.setFeed_type("Saída");
             }
         });
-
-        FragmentManager fm = getSupportFragmentManager();
-        mScannerFragment = (BarCodeScannerFragment) fm.findFragmentById(R.id.scanner_fragment);
     }
 
     @Override

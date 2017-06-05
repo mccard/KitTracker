@@ -1,6 +1,7 @@
 package edu.uco.mcamposcardoso.kittracker.activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -118,6 +119,9 @@ public class LoginActivity extends AppCompatActivity {
             if(userToken != null) {
                 dismissProgressDialog();
                 Toast.makeText(getApplicationContext(), userToken.getAuth_token(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplication(), MainActivity.class);
+                startActivity(intent);
+                finish();
             }
         }
     }
