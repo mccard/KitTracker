@@ -23,6 +23,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import edu.uco.mcamposcardoso.kittracker.R;
+import edu.uco.mcamposcardoso.kittracker.types.CurrentUser;
 import edu.uco.mcamposcardoso.kittracker.types.UserToken;
 
 public class LoginActivity extends AppCompatActivity {
@@ -119,6 +120,7 @@ public class LoginActivity extends AppCompatActivity {
             if(userToken != null) {
                 dismissProgressDialog();
                 Toast.makeText(getApplicationContext(), userToken.getAuth_token(), Toast.LENGTH_SHORT).show();
+                CurrentUser.getInstance().setToken(userToken.getAuth_token());
                 Intent intent = new Intent(getApplication(), MainActivity.class);
                 startActivity(intent);
                 finish();

@@ -25,6 +25,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
+import edu.uco.mcamposcardoso.kittracker.types.CurrentUser;
 import edu.uco.mcamposcardoso.kittracker.types.FeedResponse;
 
 
@@ -98,13 +99,13 @@ public class SampleFragment extends BarCodeScannerFragment {
 
                 HttpHeaders headers = new HttpHeaders();
 
-                final String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo" +
-                        "xLCJleHAiOjE0OTY1MjA0OTV9.bC4Ty0h7aOCPRaIVuWjWLHjGWPFfnm3ciFNm0rsY2Ns";
+                final String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjox" +
+                        "LCJleHAiOjE0OTY3MjIyMDN9.lqpqz6EMx1rrbA4mUCkoID_Z8tjc-M_qTDHv0FdJ9PI";
 
                 HttpAuthentication http = new HttpAuthentication() {
                     @Override
                     public String getHeaderValue() {
-                        return token;
+                        return CurrentUser.getInstance().getToken();
                     }
                 };
                 http.getHeaderValue();
@@ -136,7 +137,7 @@ public class SampleFragment extends BarCodeScannerFragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getActivity(), "Token Inválido!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Login expirado!", Toast.LENGTH_LONG).show();
                     }
                 });
             }
