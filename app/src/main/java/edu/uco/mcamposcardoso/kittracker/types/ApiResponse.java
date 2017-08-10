@@ -3,7 +3,7 @@ package edu.uco.mcamposcardoso.kittracker.types;
 /**
  * Created by matheuscamposcardoso on 01/06/17.
  */
-public class FeedResponse {
+public class ApiResponse {
     private String status;
 
     public String getStatus() {

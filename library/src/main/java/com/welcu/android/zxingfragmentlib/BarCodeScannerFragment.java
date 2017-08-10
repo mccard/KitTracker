@@ -429,13 +429,14 @@ public class BarCodeScannerFragment extends Fragment implements SurfaceHolder.Ca
   }
 
   public void showLoadingProgressDialog() {
-    this.showProgressDialog("Loading. Please wait...");
+    this.showProgressDialog("Carregando. Por favor aguarde...");
   }
 
   public void showProgressDialog(CharSequence message) {
     if (this.progressDialog == null) {
       this.progressDialog = new ProgressDialog(getActivity());
       this.progressDialog.setIndeterminate(true);
+      progressDialog.setCancelable(false);
     }
 
     this.progressDialog.setMessage(message);

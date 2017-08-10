@@ -26,7 +26,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import edu.uco.mcamposcardoso.kittracker.types.CurrentUser;
-import edu.uco.mcamposcardoso.kittracker.types.FeedResponse;
+import edu.uco.mcamposcardoso.kittracker.types.ApiResponse;
 
 
 public class SampleFragment extends BarCodeScannerFragment {
@@ -34,9 +34,15 @@ public class SampleFragment extends BarCodeScannerFragment {
     private ScannerListener mListener = null;
     private static final long DELAY = 2000; // 2 seconds
     int scan_count;
+    ResponseEntity<ApiResponse> response;
+    HttpEntity<MultiValueMap<String, Object>> request;
+    HttpHeaders headers;
+    MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+    HttpAuthentication http;
+    RestTemplate restTemplate;
 
     public interface ScannerListener {
-        public void onItemScan(String nomeAluno, String telefone, String curso, String periodo, String nomeItem);
+        public void onItemScan();
     }
 
     @Override
@@ -61,10 +67,13 @@ public class SampleFragment extends BarCodeScannerFragment {
 
                 beepManager.playBeepSoundAndVibrate();
 
-                new HttpRequestTask().execute();
+                //new HttpRequestTask().execute();
+
+                mListener.onItemScan();
 
                 // Space reserved to call mListener.OnItemScan() in order to trigger the activity associated with this fragment
 
+                body.add("kit_id", lastResult.toString());
                 Toast.makeText(getActivity(), scan_count++ + " Scan: " + lastResult.toString(), Toast.LENGTH_SHORT).show();
 
                 lastTimestamp = System.currentTimeMillis();
@@ -80,9 +89,11 @@ public class SampleFragment extends BarCodeScannerFragment {
         }
     }
 
-    private class HttpRequestTask extends AsyncTask<Void, Void, FeedResponse> {
+    public void registerScan(){
+        new HttpRequestTask().execute();
+    }
 
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+    private class HttpRequestTask extends AsyncTask<Void, Void, ApiResponse> {
 
         @Override
         protected void onPreExecute() {
@@ -92,33 +103,31 @@ public class SampleFragment extends BarCodeScannerFragment {
 
         @TargetApi(Build.VERSION_CODES.KITKAT)
         @Override
-        protected FeedResponse doInBackground(Void... params) {
+        protected ApiResponse doInBackground(Void... params) {
             try {
-                final String url = "https://odontokits.herokuapp.com/kits/16/feeds.json";
-                RestTemplate restTemplate = new RestTemplate();
+                final String url = "https://odontokits.herokuapp.com/feeds.json";
+                restTemplate = new RestTemplate();
 
-                HttpHeaders headers = new HttpHeaders();
+                headers = new HttpHeaders();
 
-                final String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjox" +
-                        "LCJleHAiOjE0OTY3MjIyMDN9.lqpqz6EMx1rrbA4mUCkoID_Z8tjc-M_qTDHv0FdJ9PI";
-
-                HttpAuthentication http = new HttpAuthentication() {
+                http = new HttpAuthentication() {
                     @Override
                     public String getHeaderValue() {
                         return CurrentUser.getInstance().getToken();
                     }
                 };
+
                 http.getHeaderValue();
 
                 headers.setContentType(MediaType.MULTIPART_FORM_DATA);
                 headers.setAuthorization(http);
-                HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
+                request = new HttpEntity<>(body, headers);
 
                     restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
                     restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
                 // Alternative to the implementation below
-                ResponseEntity<FeedResponse> response = restTemplate.exchange(url, HttpMethod.POST, request, FeedResponse.class);
+                response = restTemplate.exchange(url, HttpMethod.POST, request, ApiResponse.class);
                 return response.getBody();
                 // return restTemplate.postForObject(url, request, UserToken.class);
             } catch (ResourceAccessException e) {
@@ -134,10 +143,20 @@ public class SampleFragment extends BarCodeScannerFragment {
             catch (HttpClientErrorException e){
                 dismissProgressDialog();
                 Log.e("CAUSA2", e.getClass().toString(), e);
+                Log.e("CAUSA2", e.getStatusCode().toString(), e);
+                final String statusCode = e.getStatusCode().toString();
+
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getActivity(), "Login expirado!", Toast.LENGTH_LONG).show();
+                        Log.d("token", CurrentUser.getInstance().getToken());
+                        if(statusCode.equals("400")){
+                            Toast.makeText(getActivity(), "O aparelho já realizou " + getFeed_type(), Toast.LENGTH_LONG).show();
+                        }
+                        else
+                        {
+                            Toast.makeText(getActivity(), "Login expirado!", Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
             }
@@ -146,10 +165,10 @@ public class SampleFragment extends BarCodeScannerFragment {
 
 
         @Override
-        protected void onPostExecute(FeedResponse response) {
+        protected void onPostExecute(ApiResponse response) {
             if(response != null) {
                 dismissProgressDialog();
-                Toast.makeText(getActivity(), response.getStatus(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Cadastro de Movimentação de Kit: " + response.getStatus(), Toast.LENGTH_LONG).show();
             }
         }
     }

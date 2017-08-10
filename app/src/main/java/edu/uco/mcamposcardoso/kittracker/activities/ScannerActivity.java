@@ -1,5 +1,6 @@
 package edu.uco.mcamposcardoso.kittracker.activities;
 
+import android.app.DialogFragment;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,13 +11,15 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import edu.uco.mcamposcardoso.kittracker.R;
+import edu.uco.mcamposcardoso.kittracker.fragments.AlunoDetailsDialogFragment;
 import edu.uco.mcamposcardoso.kittracker.fragments.SampleFragment;
 
-public class ScannerActivity extends FragmentActivity implements SampleFragment.ScannerListener {
+public class ScannerActivity extends FragmentActivity implements SampleFragment.ScannerListener, AlunoDetailsDialogFragment.AlunoConfirmationListener {
 
     SampleFragment mScannerFragment;
     TextView txtNomeAluno, txtTelefone, txtCurso, txtPeriodo, txtNomeItem;
     Button btnEntrada, btnSaida;
+    DialogFragment alunoDetailsDialogFragment;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,17 +54,27 @@ public class ScannerActivity extends FragmentActivity implements SampleFragment.
                 btnEntrada.setTextColor(ColorStateList.valueOf(Color.BLACK));
                 btnSaida.setTextColor(ColorStateList.valueOf(Color.WHITE));
                 btnSaida.setBackgroundDrawable(getResources().getDrawable(R.drawable.toggle_state_off));
-                mScannerFragment.setFeed_type("Saída");
+                mScannerFragment.setFeed_type("Saida");
             }
         });
     }
 
     @Override
-    public void onItemScan(String nomeAluno, String telefone, String curso, String periodo, String nomeItem) {
-        txtNomeAluno.setText(nomeAluno);
-        txtCurso.setText(curso);
-        txtNomeItem.setText(nomeItem);
-        txtPeriodo.setText(periodo);
-        txtTelefone.setText(telefone);
+    public void onItemScan() {
+        showDialog();
+    }
+
+    @Override
+    public void onAlunoConfirmation() {
+        mScannerFragment.registerScan();
+    }
+
+    private void showDialog() {
+        DialogFragment currentDialog = (DialogFragment) getFragmentManager().findFragmentByTag("dialog");
+        if(currentDialog != null){
+            currentDialog.dismissAllowingStateLoss();
+        }
+        alunoDetailsDialogFragment = AlunoDetailsDialogFragment.newInstance("2012939548", "123456");
+        alunoDetailsDialogFragment.show(getFragmentManager(), "dialog");
     }
 }
