@@ -5,7 +5,7 @@ package edu.uco.mcamposcardoso.kittracker.types;
  */
 public class CurrentUser {
 
-    private String token;
+    private String token = Token.TOKEN;
     private static CurrentUser currentUser;
 
     private CurrentUser() {}

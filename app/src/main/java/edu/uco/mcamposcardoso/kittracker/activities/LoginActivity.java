@@ -130,9 +130,9 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(UserToken userToken) {
             if (userToken != null) {
                 dismissProgressDialog();
-                Toast.makeText(getApplicationContext(), userToken.getAuth_token(), Toast.LENGTH_SHORT).show();
+         //       Toast.makeText(getApplicationContext(), userToken.getAuth_token(), Toast.LENGTH_SHORT).show();
                 CurrentUser.getInstance().setToken(userToken.getAuth_token());
-                Intent intent = new Intent(getApplication(), MainActivity.class);
+                Intent intent = new Intent(getApplication(), ScannerActivity.class);
                 startActivity(intent);
                 finish();
             }

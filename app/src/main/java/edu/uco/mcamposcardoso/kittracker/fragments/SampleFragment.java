@@ -1,6 +1,8 @@
 package edu.uco.mcamposcardoso.kittracker.fragments;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,9 +42,10 @@ public class SampleFragment extends BarCodeScannerFragment {
     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
     HttpAuthentication http;
     RestTemplate restTemplate;
+    AlertDialog alertDialog;
 
     public interface ScannerListener {
-        public void onItemScan();
+        public void onItemScan(String scanResult);
     }
 
     @Override
@@ -67,14 +70,11 @@ public class SampleFragment extends BarCodeScannerFragment {
 
                 beepManager.playBeepSoundAndVibrate();
 
-                //new HttpRequestTask().execute();
+                mListener.onItemScan(lastResult.toString());
 
-                mListener.onItemScan();
+                Log.d("Scanned code", lastResult.toString());
 
-                // Space reserved to call mListener.OnItemScan() in order to trigger the activity associated with this fragment
-
-                body.add("kit_id", lastResult.toString());
-                Toast.makeText(getActivity(), scan_count++ + " Scan: " + lastResult.toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), scan_count++ + " Scan: " + lastResult.toString(), Toast.LENGTH_SHORT).show();
 
                 lastTimestamp = System.currentTimeMillis();
             }
@@ -89,7 +89,8 @@ public class SampleFragment extends BarCodeScannerFragment {
         }
     }
 
-    public void registerScan(){
+    public void registerScan(String kit_id){
+        body.add("kit_id", kit_id);
         new HttpRequestTask().execute();
     }
 
@@ -136,7 +137,17 @@ public class SampleFragment extends BarCodeScannerFragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getActivity(), "Sem conexão com a internet.", Toast.LENGTH_LONG).show();
+                        alertDialog = new AlertDialog.Builder(getActivity()).create();
+                        alertDialog.setTitle("Erro no cadastro");
+                        alertDialog.setMessage("Sem conexão com a internet!");
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        alertDialog.show();
+                 //       Toast.makeText(getActivity(), "Sem conexão com a internet.", Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -149,13 +160,47 @@ public class SampleFragment extends BarCodeScannerFragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d("token", CurrentUser.getInstance().getToken());
+//                        Log.d("token", CurrentUser.getInstance().getToken());
                         if(statusCode.equals("400")){
-                            Toast.makeText(getActivity(), "O aparelho já realizou " + getFeed_type(), Toast.LENGTH_LONG).show();
+                            alertDialog = new AlertDialog.Builder(getActivity()).create();
+                            alertDialog.setTitle("Erro no cadastro");
+                            alertDialog.setMessage("O aparelho já realizou " + getFeed_type());
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
+                       //     Toast.makeText(getActivity(), "O aparelho já realizou " + getFeed_type(), Toast.LENGTH_LONG).show();
+                        }
+                        else if(statusCode.equals("401"))
+                        {
+                            alertDialog = new AlertDialog.Builder(getActivity()).create();
+                            alertDialog.setTitle("Erro no cadastro");
+                            alertDialog.setMessage("Token expirado!");
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
+                         //   Toast.makeText(getActivity(), "Login expirado!", Toast.LENGTH_LONG).show();
                         }
                         else
                         {
-                            Toast.makeText(getActivity(), "Login expirado!", Toast.LENGTH_LONG).show();
+                            alertDialog = new AlertDialog.Builder(getActivity()).create();
+                            alertDialog.setTitle("Erro no cadastro");
+                            alertDialog.setMessage("Existe algum problema na etiqueta!");
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
+                        //    Toast.makeText(getActivity(), "Existe algum problema na etiqueta!", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -168,6 +213,16 @@ public class SampleFragment extends BarCodeScannerFragment {
         protected void onPostExecute(ApiResponse response) {
             if(response != null) {
                 dismissProgressDialog();
+                alertDialog = new AlertDialog.Builder(getActivity()).create();
+                alertDialog.setTitle("Cadastro bem sucedido");
+                alertDialog.setMessage("Cadastro de Movimentação de Kit: " + response.getStatus());
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
                 Toast.makeText(getActivity(), "Cadastro de Movimentação de Kit: " + response.getStatus(), Toast.LENGTH_LONG).show();
             }
         }

@@ -1,5 +1,6 @@
 package edu.uco.mcamposcardoso.kittracker.fragments;
 
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -11,7 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +31,7 @@ import org.springframework.web.client.RestTemplate;
 
 import edu.uco.mcamposcardoso.kittracker.R;
 import edu.uco.mcamposcardoso.kittracker.types.ApiResponse;
+import edu.uco.mcamposcardoso.kittracker.types.ScanInformation;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,15 +42,26 @@ import edu.uco.mcamposcardoso.kittracker.types.ApiResponse;
  * create an instance of this fragment.
  */
 public class AlunoDetailsDialogFragment extends DialogFragment {
-    private static final String ARG_PARAM1 = "param1";
 
+    public static ScanInformation getScan() {
+        return scan;
+    }
+
+    public static void setScan(ScanInformation scan) {
+        AlunoDetailsDialogFragment.scan = scan;
+    }
+
+    private static ScanInformation scan;
     private static String matricula;
     private static String password;
     View view;
     private boolean destroyed = false;
     Button btnAlunoConfirmation;
     ProgressDialog progressDialog;
+    AlertDialog alertDialog;
     MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
+    TextView txtMatriculaAluno;
+    EditText edtAlunoPassword;
 
     private AlunoConfirmationListener mListener;
 
@@ -55,14 +69,13 @@ public class AlunoDetailsDialogFragment extends DialogFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param matricula Parameter 1.
+     * @param scan ScanInformation.
      * @return A new instance of fragment AlunoDetailsDialogFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AlunoDetailsDialogFragment newInstance(String matricula, String password) {
+    public static AlunoDetailsDialogFragment newInstance(ScanInformation scan) {
         AlunoDetailsDialogFragment fragment = new AlunoDetailsDialogFragment();
-        setMatricula(matricula);
-        setPassword(password);
+        setScan(scan);
         return fragment;
     }
 
@@ -91,6 +104,11 @@ public class AlunoDetailsDialogFragment extends DialogFragment {
 
         getDialog().setCanceledOnTouchOutside(false);
 
+        txtMatriculaAluno = (TextView) view.findViewById(R.id.txtMatriculaAluno);
+        edtAlunoPassword = (EditText) view.findViewById(R.id.edtAlunoPassword);
+
+        txtMatriculaAluno.setText(scan.getMatricula());
+
         btnAlunoConfirmation = (Button) view.findViewById(R.id.btnAlunoConfirmation);
         return view;
     }
@@ -105,6 +123,7 @@ public class AlunoDetailsDialogFragment extends DialogFragment {
             }
         });
     }
+
     public String getMatricula() {
         return matricula;
     }
@@ -122,7 +141,7 @@ public class AlunoDetailsDialogFragment extends DialogFragment {
     }
 
     public interface AlunoConfirmationListener {
-        public void onAlunoConfirmation();
+        public void onAlunoConfirmation(String kit);
     }
 
 
@@ -131,8 +150,8 @@ public class AlunoDetailsDialogFragment extends DialogFragment {
         @Override
         protected void onPreExecute() {
             showLoadingProgressDialog();
-            body.add("matricula", getMatricula());
-            body.add("password", getPassword());
+            body.add("matricula", scan.getMatricula());
+            body.add("password", edtAlunoPassword.getText().toString());
         }
 
         @Override
@@ -150,8 +169,8 @@ public class AlunoDetailsDialogFragment extends DialogFragment {
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
                 // Alternative to the implementation below
-                  ResponseEntity<ApiResponse> response = restTemplate.exchange(url, HttpMethod.POST, request, ApiResponse.class);
-                 return response.getBody();
+                ResponseEntity<ApiResponse> response = restTemplate.exchange(url, HttpMethod.POST, request, ApiResponse.class);
+                return response.getBody();
                 //return restTemplate.postForObject(url, request, ApiResponse.class);
 
             } catch (ResourceAccessException e) {
@@ -160,7 +179,17 @@ public class AlunoDetailsDialogFragment extends DialogFragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getActivity(), "Sem conexão com a internet.", Toast.LENGTH_LONG).show();
+                        alertDialog = new AlertDialog.Builder(getActivity()).create();
+                        alertDialog.setTitle("Erro na autenticação");
+                        alertDialog.setMessage("Sem conexão com a internet!");
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        alertDialog.show();
+                      //  Toast.makeText(getActivity(), "Sem conexão com a internet.", Toast.LENGTH_LONG).show();
                     }
                 });
             } catch (HttpClientErrorException e) {
@@ -169,7 +198,17 @@ public class AlunoDetailsDialogFragment extends DialogFragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getActivity(), "Credenciais inválidas!", Toast.LENGTH_LONG).show();
+                        alertDialog = new AlertDialog.Builder(getActivity()).create();
+                        alertDialog.setTitle("Erro na autenticação");
+                        alertDialog.setMessage("Credenciais inválidas!");
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        alertDialog.show();
+                      //  Toast.makeText(getActivity(), "Credenciais inválidas!", Toast.LENGTH_LONG).show();
                     }
                 });
             } catch (HttpServerErrorException e) {
@@ -178,22 +217,50 @@ public class AlunoDetailsDialogFragment extends DialogFragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getActivity(), "Serviço indisponível!", Toast.LENGTH_LONG).show();
+                        alertDialog = new AlertDialog.Builder(getActivity()).create();
+                        alertDialog.setTitle("Erro na autenticação");
+                        alertDialog.setMessage("Serviço indisponível!");
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        alertDialog.show();
+               //         Toast.makeText(getActivity(), "Serviço indisponível!", Toast.LENGTH_LONG).show();
+                    }
+                });
+            } catch (NullPointerException e) {
+                dismissProgressDialog();
+                Log.e("CAUSA4", e.getClass().toString(), e);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        alertDialog = new AlertDialog.Builder(getActivity()).create();
+                        alertDialog.setTitle("Erro na autenticação");
+                        alertDialog.setMessage("Um erro ocorreu. Tente novamente.");
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        alertDialog.show();
+                      //  Toast.makeText(getActivity(), "Um erro inesperado occoreu, tente novamente!", Toast.LENGTH_LONG).show();
                     }
                 });
             }
-
 
             return null;
         }
 
         @Override
         protected void onPostExecute(ApiResponse response) {
-            Log.d("response", response.getStatus());
-            if (response != null) {
+//            Log.d("response", response.getStatus());
+            if (response != null && response.getStatus().equals("success")) {
                 dismissProgressDialog();
-                Toast.makeText(getActivity(), "Autenticação do Aluno: " + response.getStatus(), Toast.LENGTH_SHORT).show();
-                mListener.onAlunoConfirmation();
+         //       Toast.makeText(getActivity(), "Autenticação do Aluno: " + response.getStatus(), Toast.LENGTH_SHORT).show();
+                mListener.onAlunoConfirmation(scan.getKit());
                 dismiss();
             }
         }

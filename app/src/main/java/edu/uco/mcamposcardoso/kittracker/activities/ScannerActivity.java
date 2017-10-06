@@ -1,6 +1,8 @@
 package edu.uco.mcamposcardoso.kittracker.activities;
 
+import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import edu.uco.mcamposcardoso.kittracker.R;
 import edu.uco.mcamposcardoso.kittracker.fragments.AlunoDetailsDialogFragment;
 import edu.uco.mcamposcardoso.kittracker.fragments.SampleFragment;
+import edu.uco.mcamposcardoso.kittracker.types.ScanInformation;
 
 public class ScannerActivity extends FragmentActivity implements SampleFragment.ScannerListener, AlunoDetailsDialogFragment.AlunoConfirmationListener {
 
@@ -20,16 +23,12 @@ public class ScannerActivity extends FragmentActivity implements SampleFragment.
     TextView txtNomeAluno, txtTelefone, txtCurso, txtPeriodo, txtNomeItem;
     Button btnEntrada, btnSaida;
     DialogFragment alunoDetailsDialogFragment;
+    AlertDialog alertDialog;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
 
-      //  txtNomeAluno = (TextView) this.findViewById(R.id.txtNomeAluno);
-        txtTelefone = (TextView) this.findViewById(R.id.txtTelefone);
-        txtCurso = (TextView) this.findViewById(R.id.txtCurso);
-        txtPeriodo = (TextView) this.findViewById(R.id.txtPeriodo);
-     //   txtNomeItem = (TextView) this.findViewById(R.id.txtNomeItem);
         btnEntrada = (Button) this.findViewById(R.id.btnEntrada);
         btnSaida = (Button) this.findViewById(R.id.btnSaida);
 
@@ -60,21 +59,60 @@ public class ScannerActivity extends FragmentActivity implements SampleFragment.
     }
 
     @Override
-    public void onItemScan() {
-        showDialog();
+    public void onItemScan(String scanResult) {
+        if(StringToScanInformation(scanResult) != null) {
+            showDialog(StringToScanInformation(scanResult));
+        }
+        else{
+            return;
+        }
+
     }
 
     @Override
-    public void onAlunoConfirmation() {
-        mScannerFragment.registerScan();
+    public void onAlunoConfirmation(String kit) {
+        mScannerFragment.registerScan(kit);
     }
 
-    private void showDialog() {
-        DialogFragment currentDialog = (DialogFragment) getFragmentManager().findFragmentByTag("dialog");
+    private void showDialog(ScanInformation scan) {
+        DialogFragment currentDialog = (DialogFragment) getFragmentManager().findFragmentByTag("aluno_dialog");
         if(currentDialog != null){
             currentDialog.dismissAllowingStateLoss();
         }
-        alunoDetailsDialogFragment = AlunoDetailsDialogFragment.newInstance("2012939548", "123456");
-        alunoDetailsDialogFragment.show(getFragmentManager(), "dialog");
+
+        alunoDetailsDialogFragment = AlunoDetailsDialogFragment.newInstance(scan);
+        alunoDetailsDialogFragment.show(getFragmentManager(), "aluno_dialog");
+    }
+
+    public ScanInformation StringToScanInformation(String data){
+
+        //  "2012939548;17";
+        ScanInformation scanInformation = null;
+
+        try {
+
+            String parts[] = data.split(";");
+            String matricula = parts[0];
+            String kit = parts[1];
+
+
+            scanInformation = new ScanInformation(matricula.substring(0, matricula.length()),
+                    kit.substring(0, kit.length()));
+        }
+        catch(Exception e){
+            alertDialog = new AlertDialog.Builder(this).create();
+            alertDialog.setTitle("Erro na etiqueta");
+            alertDialog.setMessage("Tem certeza que este é um código de etiqueta?");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+          //  Toast.makeText(this, "Tem certeza que este é um código de etiqueta?", Toast.LENGTH_LONG).show();
+        }
+
+        return scanInformation;
     }
 }
