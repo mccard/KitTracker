@@ -1,0 +1,56 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="edu.uco.mcamposcardoso.kittracker.fragments.ManuallyRegisterKitFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="#FFF"
+        android:gravity="center"
+        android:id="@+id/linearLayout">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="20dp"
+            android:layout_gravity="center_horizontal">
+
+            <TextView
+                android:text="Tipo do Kit: "
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textSize="30dp"
+                android:textStyle="bold"
+                android:padding="10dp"
+                />
+
+            <Spinner
+                android:layout_width="420px"
+                android:layout_height="wrap_content"
+                android:id="@+id/spnKitTypes" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnKitCadastroConfirmar"
+                android:layout_width="160dp"
+                android:layout_height="80dp"
+                android:text="Confirmar"
+                android:textSize="20dp"
+                android:background="@drawable/toggle_state_on"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

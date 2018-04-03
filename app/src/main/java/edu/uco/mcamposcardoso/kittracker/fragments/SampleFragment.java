@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.zxing.Result;
 import com.google.zxing.client.android.BeepManager;
@@ -24,11 +23,12 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import edu.uco.mcamposcardoso.kittracker.types.CurrentUser;
 import edu.uco.mcamposcardoso.kittracker.types.ApiResponse;
+import edu.uco.mcamposcardoso.kittracker.types.CurrentUser;
 
 
 public class SampleFragment extends BarCodeScannerFragment {
@@ -89,8 +89,11 @@ public class SampleFragment extends BarCodeScannerFragment {
         }
     }
 
-    public void registerScan(String kit_id){
-        body.add("kit_id", kit_id);
+    public void registerScan(String kit_id, String matricula){
+        //Toast.makeText(getActivity()," KIT_ID: " + Integer.parseInt(kit_id), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity()," MATRICULA: " + matricula, Toast.LENGTH_SHORT).show();
+        body.add("kit_type_id", kit_id);
+        body.add("matricula", matricula);
         new HttpRequestTask().execute();
     }
 
@@ -130,7 +133,7 @@ public class SampleFragment extends BarCodeScannerFragment {
                 // Alternative to the implementation below
                 response = restTemplate.exchange(url, HttpMethod.POST, request, ApiResponse.class);
                 return response.getBody();
-                // return restTemplate.postForObject(url, request, UserToken.class);
+                //return restTemplate.postForObject(url, request, ApiResponse.class);
             } catch (ResourceAccessException e) {
                 dismissProgressDialog();
                 Log.e("CAUSA", e.getClass().toString(), e);
@@ -148,6 +151,26 @@ public class SampleFragment extends BarCodeScannerFragment {
                                 });
                         alertDialog.show();
                  //       Toast.makeText(getActivity(), "Sem conexão com a internet.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+            catch (HttpServerErrorException e) {
+                dismissProgressDialog();
+                Log.e("CAUSA3", e.getClass().toString(), e);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        alertDialog = new AlertDialog.Builder(getActivity()).create();
+                        alertDialog.setTitle("Erro no cadastro");
+                        alertDialog.setMessage("Kit não existente para o aluno!");
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        alertDialog.show();
+                        //       Toast.makeText(getActivity(), "Sem conexão com a internet.", Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -192,7 +215,7 @@ public class SampleFragment extends BarCodeScannerFragment {
                         {
                             alertDialog = new AlertDialog.Builder(getActivity()).create();
                             alertDialog.setTitle("Erro no cadastro");
-                            alertDialog.setMessage("Existe algum problema na etiqueta!");
+                            alertDialog.setMessage("Um erro inesperado ocorreu!");
                             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
@@ -223,7 +246,7 @@ public class SampleFragment extends BarCodeScannerFragment {
                             }
                         });
                 alertDialog.show();
-                Toast.makeText(getActivity(), "Cadastro de Movimentação de Kit: " + response.getStatus(), Toast.LENGTH_LONG).show();
+          //      Toast.makeText(getActivity(), "Cadastro de Movimentação de Kit: " + response.getStatus(), Toast.LENGTH_LONG).show();
             }
         }
     }

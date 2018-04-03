@@ -14,15 +14,18 @@ import android.widget.TextView;
 
 import edu.uco.mcamposcardoso.kittracker.R;
 import edu.uco.mcamposcardoso.kittracker.fragments.AlunoDetailsDialogFragment;
+import edu.uco.mcamposcardoso.kittracker.fragments.ManuallyRegisterKitFragment;
 import edu.uco.mcamposcardoso.kittracker.fragments.SampleFragment;
+import edu.uco.mcamposcardoso.kittracker.interfaces.AlunoConfirmationListener;
+import edu.uco.mcamposcardoso.kittracker.interfaces.ManualRegistrationListener;
 import edu.uco.mcamposcardoso.kittracker.types.ScanInformation;
 
-public class ScannerActivity extends FragmentActivity implements SampleFragment.ScannerListener, AlunoDetailsDialogFragment.AlunoConfirmationListener {
+public class ScannerActivity extends FragmentActivity implements SampleFragment.ScannerListener, AlunoConfirmationListener, ManualRegistrationListener {
 
     SampleFragment mScannerFragment;
     TextView txtNomeAluno, txtTelefone, txtCurso, txtPeriodo, txtNomeItem;
-    Button btnEntrada, btnSaida;
-    DialogFragment alunoDetailsDialogFragment;
+    Button btnEntrada, btnSaida, btnCadastarKit;
+    DialogFragment alunoDetailsDialogFragment, manuallyRegisterKitDialogFragment;
     AlertDialog alertDialog;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,7 @@ public class ScannerActivity extends FragmentActivity implements SampleFragment.
 
         btnEntrada = (Button) this.findViewById(R.id.btnEntrada);
         btnSaida = (Button) this.findViewById(R.id.btnSaida);
+        btnCadastarKit = (Button) this.findViewById(R.id.btnKitCadastroManual);
 
         FragmentManager manager = getSupportFragmentManager();
         mScannerFragment = (SampleFragment) manager.findFragmentById(R.id.scanner_fragment);
@@ -56,32 +60,56 @@ public class ScannerActivity extends FragmentActivity implements SampleFragment.
                 mScannerFragment.setFeed_type("Saida");
             }
         });
+
+        btnCadastarKit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(StringToScanInformation("0000000000;0"), "register");
+            }
+        });
     }
 
     @Override
     public void onItemScan(String scanResult) {
         if(StringToScanInformation(scanResult) != null) {
-            showDialog(StringToScanInformation(scanResult));
+            showDialog(StringToScanInformation(scanResult), "aluno");
         }
         else{
             return;
         }
-
     }
 
     @Override
-    public void onAlunoConfirmation(String kit) {
-        mScannerFragment.registerScan(kit);
+    public void onAlunoConfirmation(String kit, String matricula) {
+        mScannerFragment.registerScan(kit, matricula);
     }
 
-    private void showDialog(ScanInformation scan) {
-        DialogFragment currentDialog = (DialogFragment) getFragmentManager().findFragmentByTag("aluno_dialog");
+    @Override
+    public void onManualRegistration(String scanResult) {
+        if(StringToScanInformation(scanResult) != null) {
+            //Toast.makeText(this, StringToScanInformation(scanResult).getMatricula() + ";" + StringToScanInformation(scanResult).getKit(), Toast.LENGTH_LONG).show();
+            showDialog(StringToScanInformation(scanResult), "aluno");
+        }
+        else{
+            return;
+        }
+    }
+
+    private void showDialog(ScanInformation scan, String type) {
+        DialogFragment currentDialog = (DialogFragment) getFragmentManager().findFragmentByTag("current_dialog");
         if(currentDialog != null){
+            //return;
             currentDialog.dismissAllowingStateLoss();
         }
 
-        alunoDetailsDialogFragment = AlunoDetailsDialogFragment.newInstance(scan);
-        alunoDetailsDialogFragment.show(getFragmentManager(), "aluno_dialog");
+        if(type == "aluno") {
+            alunoDetailsDialogFragment = AlunoDetailsDialogFragment.newInstance(scan);
+            alunoDetailsDialogFragment.show(getFragmentManager(), "current_dialog");
+        }
+        else {
+            manuallyRegisterKitDialogFragment = ManuallyRegisterKitFragment.newInstance();
+            manuallyRegisterKitDialogFragment.show(getFragmentManager(), "current_dialog");
+        }
     }
 
     public ScanInformation StringToScanInformation(String data){

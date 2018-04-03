@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -30,13 +29,14 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import edu.uco.mcamposcardoso.kittracker.R;
+import edu.uco.mcamposcardoso.kittracker.interfaces.AlunoConfirmationListener;
 import edu.uco.mcamposcardoso.kittracker.types.ApiResponse;
 import edu.uco.mcamposcardoso.kittracker.types.ScanInformation;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link AlunoDetailsDialogFragment.AlunoConfirmationListener} interface
+ * {@link AlunoConfirmationListener} interface
  * to handle interaction events.
  * Use the {@link AlunoDetailsDialogFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -60,8 +60,7 @@ public class AlunoDetailsDialogFragment extends DialogFragment {
     ProgressDialog progressDialog;
     AlertDialog alertDialog;
     MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
-    TextView txtMatriculaAluno;
-    EditText edtAlunoPassword;
+    EditText edtAlunoMatricula, edtAlunoPassword;
 
     private AlunoConfirmationListener mListener;
 
@@ -92,22 +91,29 @@ public class AlunoDetailsDialogFragment extends DialogFragment {
             // returns the Activity this fragment is currently associated with.
         } catch (ClassCastException e) {
             throw new ClassCastException(getActivity().toString()
-                    + " must implement ScannerListener");
+                    + " must implement AlunoConfirmationListener");
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        getDialog().setTitle("Insira as credenciais");
+
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_aluno_details_dialog, container, false);
 
         getDialog().setCanceledOnTouchOutside(false);
 
-        txtMatriculaAluno = (TextView) view.findViewById(R.id.txtMatriculaAluno);
+        edtAlunoMatricula = (EditText) view.findViewById(R.id.edtAlunoMatricula);
         edtAlunoPassword = (EditText) view.findViewById(R.id.edtAlunoPassword);
 
-        txtMatriculaAluno.setText(scan.getMatricula());
+        edtAlunoMatricula.setText(scan.getMatricula());
+
+        if (!scan.getMatricula().isEmpty()){
+            edtAlunoPassword.requestFocus();
+        }
 
         btnAlunoConfirmation = (Button) view.findViewById(R.id.btnAlunoConfirmation);
         return view;
@@ -140,17 +146,12 @@ public class AlunoDetailsDialogFragment extends DialogFragment {
         AlunoDetailsDialogFragment.password = password;
     }
 
-    public interface AlunoConfirmationListener {
-        public void onAlunoConfirmation(String kit);
-    }
-
-
     private class HttpRequestTask extends AsyncTask<Void, Void, ApiResponse> {
 
         @Override
         protected void onPreExecute() {
             showLoadingProgressDialog();
-            body.add("matricula", scan.getMatricula());
+            body.add("matricula", edtAlunoMatricula.getText().toString());
             body.add("password", edtAlunoPassword.getText().toString());
         }
 
@@ -260,7 +261,7 @@ public class AlunoDetailsDialogFragment extends DialogFragment {
             if (response != null && response.getStatus().equals("success")) {
                 dismissProgressDialog();
          //       Toast.makeText(getActivity(), "Autenticação do Aluno: " + response.getStatus(), Toast.LENGTH_SHORT).show();
-                mListener.onAlunoConfirmation(scan.getKit());
+                mListener.onAlunoConfirmation(scan.getKit(), edtAlunoMatricula.getText().toString());
                 dismiss();
             }
         }

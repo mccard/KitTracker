@@ -46,8 +46,8 @@
                 android:textStyle="bold"
                 android:padding="10dp" />
 
-            <TextView
-                android:id="@+id/txtMatriculaAluno"
+            <EditText
+                android:id="@+id/edtAlunoMatricula"
                 android:text="Nenhum"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -108,6 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                android:password="true"
                 android:background="@color/white"
                 android:textSize="30dp"
                 android:hint="Senha"
