@@ -1,0 +1,125 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:17:1-54:12
+INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:17:1-54:12
+INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:17:1-54:12
+INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:17:1-54:12
+INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:17:1-54:12
+INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:17:1-54:12
+INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:17:1-54:12
+	package
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:18:11-52
+		INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml
+		INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml
+	android:versionName
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:19:11-38
+		INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml
+		INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:17:11-69
+	android:versionCode
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:20:11-36
+		INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml
+		INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml
+	android:installLocation
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:21:11-41
+uses-permission#android.permission.CAMERA
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:23:3-62
+	android:name
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:23:20-60
+uses-permission#android.permission.INTERNET
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:24:3-64
+	android:name
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:24:20-62
+uses-permission#android.permission.VIBRATE
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:25:3-63
+	android:name
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:25:20-61
+uses-permission#android.permission.FLASHLIGHT
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:26:3-66
+	android:name
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:26:20-64
+uses-permission#android.permission.READ_CONTACTS
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:27:3-69
+	android:name
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:27:20-67
+uses-permission#com.android.browser.permission.READ_HISTORY_BOOKMARKS
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:28:3-90
+	android:name
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:28:20-88
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:29:3-78
+	android:name
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:29:20-76
+uses-permission#android.permission.CHANGE_WIFI_STATE
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:30:3-73
+	android:name
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:30:20-71
+uses-permission#android.permission.ACCESS_WIFI_STATE
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:31:3-73
+	android:name
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:31:20-71
+uses-sdk
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:33:3-71
+INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:33:3-71
+INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:33:3-71
+INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:33:3-71
+INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:33:3-71
+	android:targetSdkVersion
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:33:40-69
+		INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml
+		INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:33:13-39
+		INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml
+		INJECTED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml
+uses-feature#android.hardware.camera
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:36:3-82
+	android:required
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:36:56-80
+	android:name
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:36:17-55
+uses-feature#android.hardware.camera.front
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:37:3-88
+	android:required
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:37:62-86
+	android:name
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:37:17-61
+uses-feature#android.hardware.camera.autofocus
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:40:3-92
+	android:required
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:40:66-90
+	android:name
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:40:17-65
+uses-feature#android.hardware.camera.flash
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:41:3-88
+	android:required
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:41:62-86
+	android:name
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:41:17-61
+uses-feature#android.hardware.screen.landscape
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:42:3-67
+	android:name
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:42:17-65
+uses-feature#android.hardware.wifi
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:43:3-80
+	android:required
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:43:54-78
+	android:name
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:43:17-53
+uses-feature#android.hardware.touchscreen
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:45:3-62
+	android:name
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:45:17-60
+supports-screens
+ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:48:3-52:48
+	android:largeScreens
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:49:21-48
+	android:smallScreens
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:51:21-48
+	android:normalScreens
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:50:21-49
+	android:xlargeScreens
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:48:21-49
+	android:anyDensity
+		ADDED from /Users/matheuscamposcardoso/Documents/tcc/KitTracker/zxing-android/src/main/AndroidManifest.xml:52:21-46
