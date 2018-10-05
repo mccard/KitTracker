@@ -12,14 +12,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.util.Collections;
+
 import edu.uco.mcamposcardoso.kittracker.R;
 import edu.uco.mcamposcardoso.kittracker.interfaces.AlunoConfirmationListener;
 import edu.uco.mcamposcardoso.kittracker.interfaces.ManualRegistrationListener;
-import edu.uco.mcamposcardoso.kittracker.types.KitType;
+import edu.uco.mcamposcardoso.kittracker.types.KitTypeArray;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +42,7 @@ public class ManuallyRegisterKitFragment extends DialogFragment {
     MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
     EditText edtKitId;
     Spinner kit_types;
+    KitTypeArray new_kit_type;
 
     private ManualRegistrationListener mListener;
 
@@ -69,6 +73,7 @@ public class ManuallyRegisterKitFragment extends DialogFragment {
             throw new ClassCastException(getActivity().toString()
                     + " must implement ManualRegistrationListener");
         }
+        new_kit_type = new KitTypeArray();
     }
 
     @Override
@@ -81,9 +86,9 @@ public class ManuallyRegisterKitFragment extends DialogFragment {
         view = inflater.inflate(R.layout.fragment_manually_register_kit, container, false);
 
         kit_types = (Spinner) view.findViewById(R.id.spnKitTypes);
-
+        Collections.sort(new_kit_type.kits);
         ArrayAdapter<String> adaptator = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_dropdown_item, KitType.kits);
+                android.R.layout.simple_spinner_dropdown_item, new_kit_type.kits);
 
         kit_types.setAdapter(adaptator);
         getDialog().setCanceledOnTouchOutside(false);
@@ -100,11 +105,7 @@ public class ManuallyRegisterKitFragment extends DialogFragment {
         btnKitConfirmation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (kit_types.getSelectedItemPosition() == 0) {
-                    dismiss();
-                    return;
-                }
-                mListener.onManualRegistration(";" + String.valueOf(kit_types.getSelectedItemPosition()));
+                mListener.onManualRegistration(";" + new_kit_type.name_to_id.getFirst(kit_types.getSelectedItem().toString()));
                 dismiss();
             }
         });

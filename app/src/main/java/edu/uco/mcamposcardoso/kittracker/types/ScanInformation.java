@@ -7,10 +7,12 @@ public class ScanInformation {
 
     private String matricula;
     private String kit;
+    private String feed_type;
 
-    public ScanInformation(String matricula, String kit) {
+    public ScanInformation(String matricula, String kit, String feed_type) {
         this.matricula = matricula;
         this.kit = kit;
+        this.feed_type = feed_type;
     }
 
     public String getMatricula() {
@@ -29,4 +31,11 @@ public class ScanInformation {
         this.kit = kit;
     }
 
+    public String getFeed_type() {
+        return feed_type;
+    }
+
+    public void setFeed_type(String feed_type) {
+        this.feed_type = feed_type;
+    }
 }

@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.zxing.Result;
 import com.google.zxing.client.android.BeepManager;
@@ -29,13 +30,15 @@ import org.springframework.web.client.RestTemplate;
 
 import edu.uco.mcamposcardoso.kittracker.types.ApiResponse;
 import edu.uco.mcamposcardoso.kittracker.types.CurrentUser;
-
+import edu.uco.mcamposcardoso.kittracker.types.KitTypeArray;
 
 public class SampleFragment extends BarCodeScannerFragment {
 
     private ScannerListener mListener = null;
     private static final long DELAY = 2000; // 2 seconds
     int scan_count;
+    KitTypeArray ktp = new KitTypeArray();
+    private String alert_text;
     ResponseEntity<ApiResponse> response;
     HttpEntity<MultiValueMap<String, Object>> request;
     HttpHeaders headers;
@@ -52,10 +55,13 @@ public class SampleFragment extends BarCodeScannerFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        alertDialog = new AlertDialog.Builder(getActivity()).create();
+
         final BeepManager beepManager = new BeepManager(getActivity());
         beepManager.updatePrefs();
 
         scan_count = 0;
+        alert_text = "";
 
         this.setmCallBack(new IResultCallback() {
             private long lastTimestamp = 0;
@@ -89,28 +95,28 @@ public class SampleFragment extends BarCodeScannerFragment {
         }
     }
 
-    public void registerScan(String kit_id, String matricula){
-        //Toast.makeText(getActivity()," KIT_ID: " + Integer.parseInt(kit_id), Toast.LENGTH_SHORT).show();
-        //Toast.makeText(getActivity()," MATRICULA: " + matricula, Toast.LENGTH_SHORT).show();
-        body.add("kit_type_id", kit_id);
-        body.add("matricula", matricula);
-        new HttpRequestTask().execute();
+    public void registerScan(String kit_id, String matricula, String feedType){
+        new HttpRequestTask().execute(feedType, kit_id, matricula);
     }
 
-    private class HttpRequestTask extends AsyncTask<Void, Void, ApiResponse> {
+    private class HttpRequestTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
             showLoadingProgressDialog();
-            body.add("tipo", getFeed_type());
         }
 
         @TargetApi(Build.VERSION_CODES.KITKAT)
         @Override
-        protected ApiResponse doInBackground(Void... params) {
+        protected String doInBackground(final String... params) {
             try {
                 final String url = "https://odontokits.herokuapp.com/feeds.json";
                 restTemplate = new RestTemplate();
+
+                body.clear();
+                body.add("tipo", params[0]);
+                body.add("kit_type_id", params[1]);
+                body.add("matricula", params[2]);
 
                 headers = new HttpHeaders();
 
@@ -121,63 +127,90 @@ public class SampleFragment extends BarCodeScannerFragment {
                     }
                 };
 
+                Log.d("bodyk", body.getFirst("kit_type_id") + ";" + body.getFirst("matricula")
+                        + ";" + body.getFirst("tipo") + ";" + body.size() + ";" + params[0]);
+
                 http.getHeaderValue();
 
                 headers.setContentType(MediaType.MULTIPART_FORM_DATA);
                 headers.setAuthorization(http);
                 request = new HttpEntity<>(body, headers);
 
-                    restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
-                    restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
                 // Alternative to the implementation below
                 response = restTemplate.exchange(url, HttpMethod.POST, request, ApiResponse.class);
-                return response.getBody();
+                return params[1];
                 //return restTemplate.postForObject(url, request, ApiResponse.class);
             } catch (ResourceAccessException e) {
                 dismissProgressDialog();
-                Log.e("CAUSA", e.getClass().toString(), e);
+            //    Log.e("CAUSA", e.getClass().toString(), e);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        alertDialog = new AlertDialog.Builder(getActivity()).create();
-                        alertDialog.setTitle("Erro no cadastro");
-                        alertDialog.setMessage("Sem conexão com a internet!");
-                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                        alertDialog.show();
-                 //       Toast.makeText(getActivity(), "Sem conexão com a internet.", Toast.LENGTH_LONG).show();
+                        try {
+                            alert_text = alert_text + "- Kit " + ktp.id_to_name.getFirst(params[1]) +
+                                    ": Sem conexão com a internet!\n";
+                        }
+                        catch (ArrayIndexOutOfBoundsException e){
+                            alert_text = alert_text + "- Kit **Não Cadastrado**" + ": Sem conexão com a internet!\n";
+                        }
+                        if(alertDialog.isShowing()){
+                            alertDialog.setMessage(alert_text);
+                        }
+                        else {
+                            alertDialog.setTitle("Cadastro de Movimentação");
+                            alertDialog.setMessage(alert_text);
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            alert_text = "";
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.setCancelable(false);
+                            alertDialog.show();
+                        }
                     }
                 });
             }
             catch (HttpServerErrorException e) {
                 dismissProgressDialog();
-                Log.e("CAUSA3", e.getClass().toString(), e);
+           //     Log.e("CAUSA3", e.getClass().toString(), e);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        alertDialog = new AlertDialog.Builder(getActivity()).create();
-                        alertDialog.setTitle("Erro no cadastro");
-                        alertDialog.setMessage("Kit não existente para o aluno!");
-                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                        alertDialog.show();
-                        //       Toast.makeText(getActivity(), "Sem conexão com a internet.", Toast.LENGTH_LONG).show();
+                        try {
+                            alert_text = alert_text + "- Kit " + ktp.id_to_name.getFirst((params[1])) +
+                                    ": Kit não existente para o aluno!\n";
+                        }
+                        catch (ArrayIndexOutOfBoundsException e){
+                            alert_text = alert_text + "- Kit **Não Cadastrado**" + ": Kit não existente para o aluno!\n";
+                        }
+                        if(alertDialog.isShowing()){
+                            alertDialog.setMessage(alert_text);
+                        }
+                        else {
+                            alertDialog.setTitle("Cadastro de Movimentação");
+                            alertDialog.setMessage(alert_text);
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            alert_text = "";
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.setCancelable(false);
+                            alertDialog.show();
+                        }
                     }
                 });
             }
             catch (HttpClientErrorException e){
                 dismissProgressDialog();
-                Log.e("CAUSA2", e.getClass().toString(), e);
-                Log.e("CAUSA2", e.getStatusCode().toString(), e);
+          //      Log.e("CAUSA2", e.getClass().toString(), e);
+           //     Log.e("CAUSA2", e.getStatusCode().toString(), e);
                 final String statusCode = e.getStatusCode().toString();
 
                 getActivity().runOnUiThread(new Runnable() {
@@ -185,44 +218,84 @@ public class SampleFragment extends BarCodeScannerFragment {
                     public void run() {
 //                        Log.d("token", CurrentUser.getInstance().getToken());
                         if(statusCode.equals("400")){
-                            alertDialog = new AlertDialog.Builder(getActivity()).create();
-                            alertDialog.setTitle("Erro no cadastro");
-                            alertDialog.setMessage("O aparelho já realizou " + getFeed_type());
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                            alertDialog.show();
+                            try {
+                                Toast.makeText(getActivity(), "ktp.id_to_name.getFirst(Integer.getInteger(params[1])): " + ktp.id_to_name.getFirst(params[1]), Toast.LENGTH_LONG).show();
+                                alert_text = alert_text + "- Kit " + ktp.id_to_name.getFirst(params[1]) +
+                                        ": O aparelho já realizou " + params[0] + "\n";
+                            }
+                            catch (ArrayIndexOutOfBoundsException e){
+                                alert_text = alert_text + "- Kit **Não Cadastrado**" + ": O aparelho já realizou " + params[0] + ".\n";
+                            }
+                            if(alertDialog.isShowing()){
+                                alertDialog.setMessage(alert_text);
+                            }
+                            else {
+                                alertDialog.setTitle("Cadastro de Movimentação");
+                                alertDialog.setMessage(alert_text);
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                alert_text = "";
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                alertDialog.setCancelable(false);
+                                alertDialog.show();
+                            }
                        //     Toast.makeText(getActivity(), "O aparelho já realizou " + getFeed_type(), Toast.LENGTH_LONG).show();
                         }
                         else if(statusCode.equals("401"))
                         {
-                            alertDialog = new AlertDialog.Builder(getActivity()).create();
-                            alertDialog.setTitle("Erro no cadastro");
-                            alertDialog.setMessage("Token expirado!");
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                            alertDialog.show();
+                            try {
+                                alert_text = alert_text + "- Kit " + ktp.id_to_name.getFirst(params[1]) +
+                                        ": Token expirado!\n";
+                            }
+                            catch (ArrayIndexOutOfBoundsException e){
+                                alert_text = alert_text + "- Kit **Não Cadastrado**" + ": Token expirado!\n";
+                            }
+                            if(alertDialog.isShowing()){
+                                alertDialog.setMessage(alert_text);
+                            }
+                            else {
+                                alertDialog.setTitle("Cadastro de Movimentação");
+                                alertDialog.setMessage(alert_text);
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                alert_text = "";
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                alertDialog.setCancelable(false);
+                                alertDialog.show();
+                            }
                          //   Toast.makeText(getActivity(), "Login expirado!", Toast.LENGTH_LONG).show();
                         }
                         else
                         {
-                            alertDialog = new AlertDialog.Builder(getActivity()).create();
-                            alertDialog.setTitle("Erro no cadastro");
-                            alertDialog.setMessage("Um erro inesperado ocorreu!");
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                            alertDialog.show();
+                            try {
+                                alert_text = alert_text + "- Kit " + ktp.id_to_name.getFirst((params[1])) +
+                                        ": Um erro inesperado aconteceu!\n";
+                            }
+                            catch (ArrayIndexOutOfBoundsException e){
+                                alert_text = alert_text + "- Kit **Não Cadastrado**" + ": Um erro inesperado aconteceu!\n";
+                            }
+                            if(alertDialog.isShowing()){
+                                alertDialog.setMessage(alert_text);
+                            }
+                            else {
+                                alertDialog.setTitle("Cadastro de Movimentação");
+                                alertDialog.setMessage(alert_text);
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                alert_text = "";
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                alertDialog.setCancelable(false);
+                                alertDialog.show();
+                            }
                         //    Toast.makeText(getActivity(), "Existe algum problema na etiqueta!", Toast.LENGTH_LONG).show();
                         }
                     }
@@ -231,21 +304,35 @@ public class SampleFragment extends BarCodeScannerFragment {
             return null;
         }
 
-
         @Override
-        protected void onPostExecute(ApiResponse response) {
-            if(response != null) {
+        protected void onPostExecute(String kit_id) {
+            if(kit_id != null) {
                 dismissProgressDialog();
-                alertDialog = new AlertDialog.Builder(getActivity()).create();
-                alertDialog.setTitle("Cadastro bem sucedido");
-                alertDialog.setMessage("Cadastro de Movimentação de Kit: " + response.getStatus());
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
+                try {
+                    alert_text = alert_text + "- Kit " + ktp.id_to_name.getFirst((kit_id)) +  ": sucesso.\n";
+                }
+                catch (ArrayIndexOutOfBoundsException e){
+                    alert_text = alert_text + "- Kit **Não Cadastrado**: sucesso." + "\n";
+                }
+                catch (NumberFormatException e){
+                    alert_text = alert_text + "- Kit **Não Cadastrado**: sucesso." + "\n";
+                }
+                if(alertDialog.isShowing()){
+                    alertDialog.setMessage(alert_text);
+                }
+                else {
+                    alertDialog.setTitle("Cadastro de Movimentação");
+                    alertDialog.setMessage(alert_text);
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    alert_text = "";
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.setCancelable(false);
+                    alertDialog.show();
+                }
           //      Toast.makeText(getActivity(), "Cadastro de Movimentação de Kit: " + response.getStatus(), Toast.LENGTH_LONG).show();
             }
         }

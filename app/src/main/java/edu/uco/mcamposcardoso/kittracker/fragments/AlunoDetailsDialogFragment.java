@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -27,6 +28,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
 
 import edu.uco.mcamposcardoso.kittracker.R;
 import edu.uco.mcamposcardoso.kittracker.interfaces.AlunoConfirmationListener;
@@ -43,15 +46,11 @@ import edu.uco.mcamposcardoso.kittracker.types.ScanInformation;
  */
 public class AlunoDetailsDialogFragment extends DialogFragment {
 
-    public static ScanInformation getScan() {
-        return scan;
+    public static void setScanInfoArray(ArrayList<ScanInformation> scanInfoArray) {
+        AlunoDetailsDialogFragment.scanInfoArray = scanInfoArray;
     }
 
-    public static void setScan(ScanInformation scan) {
-        AlunoDetailsDialogFragment.scan = scan;
-    }
-
-    private static ScanInformation scan;
+    private static ArrayList<ScanInformation> scanInfoArray;
     private static String matricula;
     private static String password;
     View view;
@@ -68,13 +67,13 @@ public class AlunoDetailsDialogFragment extends DialogFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param scan ScanInformation.
+     * @param scanInfoArray ArrayList<ScanInformation>.
      * @return A new instance of fragment AlunoDetailsDialogFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AlunoDetailsDialogFragment newInstance(ScanInformation scan) {
+    public static AlunoDetailsDialogFragment newInstance(ArrayList<ScanInformation> scanInfoArray) {
         AlunoDetailsDialogFragment fragment = new AlunoDetailsDialogFragment();
-        setScan(scan);
+        setScanInfoArray(scanInfoArray);
         return fragment;
     }
 
@@ -109,9 +108,9 @@ public class AlunoDetailsDialogFragment extends DialogFragment {
         edtAlunoMatricula = (EditText) view.findViewById(R.id.edtAlunoMatricula);
         edtAlunoPassword = (EditText) view.findViewById(R.id.edtAlunoPassword);
 
-        edtAlunoMatricula.setText(scan.getMatricula());
+        edtAlunoMatricula.setText(scanInfoArray.get(0).getMatricula());
 
-        if (!scan.getMatricula().isEmpty()){
+        if (!scanInfoArray.get(0).getMatricula().isEmpty()){
             edtAlunoPassword.requestFocus();
         }
 
@@ -261,7 +260,8 @@ public class AlunoDetailsDialogFragment extends DialogFragment {
             if (response != null && response.getStatus().equals("success")) {
                 dismissProgressDialog();
          //       Toast.makeText(getActivity(), "Autenticação do Aluno: " + response.getStatus(), Toast.LENGTH_SHORT).show();
-                mListener.onAlunoConfirmation(scan.getKit(), edtAlunoMatricula.getText().toString());
+                int i;
+                mListener.onAlunoConfirmation(edtAlunoMatricula.getText().toString());
                 dismiss();
             }
         }
