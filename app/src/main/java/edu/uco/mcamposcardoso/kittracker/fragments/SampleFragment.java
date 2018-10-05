@@ -219,7 +219,7 @@ public class SampleFragment extends BarCodeScannerFragment {
 //                        Log.d("token", CurrentUser.getInstance().getToken());
                         if(statusCode.equals("400")){
                             try {
-                                Toast.makeText(getActivity(), "ktp.id_to_name.getFirst(Integer.getInteger(params[1])): " + ktp.id_to_name.getFirst(params[1]), Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getActivity(), "ktp.id_to_name.getFirst(Integer.getInteger(params[1])): " + ktp.id_to_name.getFirst(params[1]), Toast.LENGTH_LONG).show();
                                 alert_text = alert_text + "- Kit " + ktp.id_to_name.getFirst(params[1]) +
                                         ": O aparelho já realizou " + params[0] + "\n";
                             }

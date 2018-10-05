@@ -130,14 +130,21 @@ public class ScannerActivity extends FragmentActivity implements SampleFragment.
             scanInfoArray.add(scanResult);
         }
         else{
-            Toast.makeText(this, scanInfoArray.get(scanInfoArray.size() - 1).getFeed_type() + ";" + scanResult.getFeed_type(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, scanInfoArray.get(scanInfoArray.size() - 1).getFeed_type() + ";" + scanResult.getFeed_type(), Toast.LENGTH_LONG).show();
             if (scanInfoArray.get(scanInfoArray.size() - 1).getMatricula().equals(scanResult.getMatricula())){
                 scanInfoArray.add(scanResult);
             }
             else{
-                Toast.makeText(this, "Kit não pertence ao mesmo aluno. Termine o processo " +
-                        "de registro informando as credenciais, ou clique no botão de submissão múltipla" +
-                        " para abortar a submissão em andamento!!!" + "LENGHT: " + scanInfoArray.size(), Toast.LENGTH_LONG).show();
+                alertDialog = new AlertDialog.Builder(this).create();
+                alertDialog.setTitle("Erro");
+                alertDialog.setMessage("Kit não pertence ao mesmo aluno!");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
             }
         }
     }
@@ -145,7 +152,7 @@ public class ScannerActivity extends FragmentActivity implements SampleFragment.
     @Override
     public void onAlunoConfirmation(String matricula) {
         int i;
-        Toast.makeText(this, "scanInfoArray.size(): " + scanInfoArray.size(), Toast.LENGTH_LONG).show();
+     //   Toast.makeText(this, "scanInfoArray.size(): " + scanInfoArray.size(), Toast.LENGTH_LONG).show();
         for(i = 0; i < scanInfoArray.size(); i++) {
             mScannerFragment.registerScan(scanInfoArray.get(i).getKit(), matricula, scanInfoArray.get(i).getFeed_type());
         }
